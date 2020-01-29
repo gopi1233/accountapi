@@ -17,3 +17,12 @@ types:
      body: 
       application/json: 
        type: AccountResponse
+/getAccountDetails:
+   get: 
+    queryParameters: 
+      accountId: integer
+    responses: 
+      200:
+    body: 
+     application/json: 
+      type: Account

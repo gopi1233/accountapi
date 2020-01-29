@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
-http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-   
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
     <apikit:config name="accountapi-config" api="accountapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
-    <db:config name="Database_Config" doc:name="Database Config" doc:id="71e2b63f-bb27-4455-9aba-058c7f3d3e95" >
-		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.userName}" password="${db.password}" database="integration" />
-	</db:config>
-	
-	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="a7307c65-1763-44f2-879a-66e43a02e9fb" >
-		<http:listener-connection host="0.0.0.0" port="8081" />
-	</http:listener-config>
-	<configuration-properties doc:name="Configuration properties" doc:id="3155f28c-2bf7-48b1-89c2-2ab36274424b" file="accountapi.yaml" />
-	<flow name="accountapi-main">
-		<http:listener doc:name="Listener" doc:id="d252a5b0-d396-46fb-91c7-c12866f62161" config-ref="HTTP_Listener_config" path="/api/*"/>
-		<apikit:router config-ref="accountapi-config" />
+    <db:config name="Database_Config" doc:name="Database Config" doc:id="71e2b63f-bb27-4455-9aba-058c7f3d3e95">
+        <db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.userName}" password="${db.password}" database="integration" />
+    </db:config>
+    <http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="a7307c65-1763-44f2-879a-66e43a02e9fb">
+        <http:listener-connection host="0.0.0.0" port="8081" />
+    </http:listener-config>
+    <configuration-properties doc:name="Configuration properties" doc:id="3155f28c-2bf7-48b1-89c2-2ab36274424b" file="accountapi.yaml" />
+    <flow name="accountapi-main">
+        <http:listener doc:name="Listener" doc:id="d252a5b0-d396-46fb-91c7-c12866f62161" config-ref="HTTP_Listener_config" path="/api/*" />
+        <apikit:router config-ref="accountapi-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:BAD_REQUEST">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -30,7 +26,7 @@ output application/json
                 </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:NOT_FOUND">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -43,7 +39,7 @@ output application/json
                 </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -56,7 +52,7 @@ output application/json
                 </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -69,7 +65,7 @@ output application/json
                 </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -82,7 +78,7 @@ output application/json
                 </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -96,13 +92,12 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-	<flow name="accountapi-console">
-		<http:listener doc:name="Listener" doc:id="3116e620-5bae-44fb-8a44-3d02562cd685" config-ref="HTTP_Listener_config" path="/console/*"/>
-		<apikit:console config-ref="accountapi-config" />
+    <flow name="accountapi-console">
+        <http:listener doc:name="Listener" doc:id="3116e620-5bae-44fb-8a44-3d02562cd685" config-ref="HTTP_Listener_config" path="/console/*" />
+        <apikit:console config-ref="accountapi-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:NOT_FOUND">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -116,22 +111,22 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-	<flow name="post:\createAccount:application\json:accountapi-config">
-		<logger level="INFO" doc:name="Logger" doc:id="a3c835ba-4bb9-4e16-8aa1-eb592b949879" message="createAccount flow starts....#[payload]" />
-		<db:insert doc:id="d86186b0-5883-4011-ab6a-0fca16bb38c9" config-ref="Database_Config">
-			<db:sql>insert into Account(name,gender,maritalStatus,phone,email) 
+    <flow name="post:\createAccount:application\json:accountapi-config">
+        <logger level="INFO" doc:name="Logger" doc:id="a3c835ba-4bb9-4e16-8aa1-eb592b949879" message="createAccount flow starts....#[payload]" />
+        <db:insert doc:id="d86186b0-5883-4011-ab6a-0fca16bb38c9" config-ref="Database_Config">
+            <db:sql>insert into Account(name,gender,maritalStatus,phone,email) 
 values(:name,:gender,:maritalStatus,:phone,:email)</db:sql>
-			<db:input-parameters><![CDATA[#[{
+            <db:input-parameters><![CDATA[#[{
 	'name': payload.name,
 	'gender': payload.gender,
 	'maritalStatus': payload.maritalStatus,
 	'phone': payload.phone,
 	'email': payload.email
 	}]]]></db:input-parameters>
-		</db:insert>
-		<ee:transform doc:name="Transform Message" doc:id="194a0251-ab32-471a-b051-323958c8d350">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
+        </db:insert>
+        <ee:transform doc:name="Transform Message" doc:id="194a0251-ab32-471a-b051-323958c8d350">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {
@@ -140,8 +135,32 @@ output application/json
 	"Statuscode":"201",
 	"message":"Account created Sucessfully"
 }]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="672f78eb-e07d-4293-b631-7d732ed8bb20" message="Response of the create Account flow....#[payload]" />
+            </ee:message>
+        </ee:transform>
+        <logger level="INFO" doc:name="Logger" doc:id="672f78eb-e07d-4293-b631-7d732ed8bb20" message="Response of the create Account flow....#[payload]" />
+    </flow>
+    <flow name="get:\getAccountDetails:application\json:accountapi-config">
+        <logger level="INFO" message="getaccountdetais flow....#[payload]" />
+		<db:select doc:name="Select" doc:id="284eb7a7-3882-4f0b-8f08-916f9c951cc1" config-ref="Database_Config">
+            <db:sql>select * from Account where accountId=(:accountId)</db:sql>
+            <db:input-parameters><![CDATA[#[{       
+
+'accountId':  attributes.queryParams.'accountId'
+
+}]]]></db:input-parameters>
+        </db:select>
+		<ee:transform doc:name="Transform Message" doc:id="488e8a0f-9eef-4733-b851-a41518b1f958">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message:"accountId details",
+	payload:payload
+	
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="dd984c71-b556-437f-be4b-33e2d795a27f" message="responce of the get account details...#[payload]" />
     </flow>
 </mule>

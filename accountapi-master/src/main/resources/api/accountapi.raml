@@ -1,0 +1,28 @@
+#%RAML 1.0
+version: 1.0.0
+title: accountapi
+baseUri: http://localhost:8081/api
+
+types: 
+   Account: !include datatypes/Account.raml
+   AccountResponse: !include datatypes/AccountResponse.raml 
+
+/createAccount: 
+  post: 
+   body: 
+    application/json: 
+     type: Account 
+   responses: 
+    200:
+     body: 
+      application/json: 
+       type: AccountResponse
+/getAccountDetails:
+   get: 
+    queryParameters: 
+      accountId: integer
+    responses: 
+      200:
+    body: 
+     application/json: 
+      type: Account

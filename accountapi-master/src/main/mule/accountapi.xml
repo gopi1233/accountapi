@@ -11,7 +11,7 @@
     <flow name="accountapi-main">
         <http:listener doc:name="Listener" doc:id="d252a5b0-d396-46fb-91c7-c12866f62161" config-ref="HTTP_Listener_config" path="/api/*" />
         <apikit:router config-ref="accountapi-config" />
-		<error-handler>
+        <error-handler>
             <on-error-propagate type="APIKIT:BAD_REQUEST">
                 <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>

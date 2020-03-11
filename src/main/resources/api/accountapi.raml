@@ -1,28 +1,17 @@
 #%RAML 1.0
-version: 1.0.0
 title: accountapi
-baseUri: http://localhost:8081/api
-
+baseUri: https://anypoint.mulesoft.com/mocking/api/v1/links/c11629f7-85df-4071-ae51-4d3e3796cc79/api # baseUri: http://localhost:8081/api
 types: 
    Account: !include datatypes/Account.raml
    AccountResponse: !include datatypes/AccountResponse.raml 
-
-/createAccount: 
-  post: 
-   body: 
-    application/json: 
-     type: Account 
-   responses: 
-    200:
-     body: 
-      application/json: 
-       type: AccountResponse
-/getAccountDetails:
-   get: 
-    queryParameters: 
-      accountId: integer
-    responses: 
-      200:
-    body: 
-     application/json: 
-      type: Account
+/createaccount:
+  post:
+    body:
+      application/json:
+        type: Account
+    responses:
+      201:
+        body:
+          application/json:
+            type: AccountResponse
+  
